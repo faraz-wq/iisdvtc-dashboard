@@ -10,7 +10,7 @@ export interface College {
   logo?: string;
   banner?: string;
   description: string;
-  location: string;
+  location: Location;
   affiliation?: string;
   contact?: Contact;
   color: string;
@@ -18,6 +18,12 @@ export interface College {
   facilities: string[];
   faculty: Faculty[];
   events: Event[];
+}
+
+interface Location{
+  latitude: number;
+  longitude: number;
+  address?: string;
 }
 
 interface Contact {
@@ -71,7 +77,8 @@ export const getCollege = async (id: string): Promise<College> => {
     const response = await axios.get(`${API_URL}/${id}`, {
       withCredentials: true
     });
-    return response.data;
+    console.log(response.data);
+    return cleanCollegeData(response.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
@@ -79,6 +86,67 @@ export const getCollege = async (id: string): Promise<College> => {
     throw new Error('Failed to fetch college');
   }
 };
+
+function cleanCollegeData(data: any): any {
+  // Initialize cleaned data object
+  const cleanedData: any = { ...data };
+
+  // Parse 'contact' field from JSON string to object
+  if (typeof cleanedData.contact === "string") {
+    try {
+      cleanedData.contact = JSON.parse(cleanedData.contact);
+    } catch (error) {
+      console.error("Failed to parse 'contact' field:", error);
+      cleanedData.contact = {
+        address: "",
+        phone: [],
+        email: "",
+      };
+    }
+  }
+
+  // Ensure 'contact.phone' is always an array
+  if (!Array.isArray(cleanedData.contact.phone)) {
+    cleanedData.contact.phone = [];
+  }
+
+  // Parse 'facilities' field from JSON string to array
+  if (Array.isArray(cleanedData.facilities)) {
+    cleanedData.facilities = cleanedData.facilities
+      .map((facility: string) => {
+        try {
+          return JSON.parse(facility); // Parse each facility string
+        } catch (error) {
+          console.error("Failed to parse 'facilities' field:", error);
+          return [];
+        }
+      })
+      .flat(); // Flatten nested arrays
+  } else {
+    cleanedData.facilities = [];
+  }
+
+  // Ensure 'programs' is an array
+  if (!Array.isArray(cleanedData.programs)) {
+    cleanedData.programs = [];
+  }
+
+  // Ensure 'faculty' is an array
+  if (!Array.isArray(cleanedData.faculty)) {
+    cleanedData.faculty = [];
+  }
+
+  // Ensure 'events' is an array
+  if (!Array.isArray(cleanedData.events)) {
+    cleanedData.events = [];
+  }
+
+  // Remove unnecessary fields like '__v'
+  delete cleanedData.__v;
+
+  console.log(cleanedData);
+  return cleanedData;
+}
 
 export const createCollege = async (college: Omit<College, '_id'>): Promise<College> => {
   try {

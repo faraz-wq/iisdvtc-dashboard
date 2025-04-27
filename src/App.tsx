@@ -15,6 +15,7 @@ import AddCollegePage from "./pages/AddCollegePage";
 import AddProgramPage from "./pages/AddProgramPage";
 import CollegeDetailsPage from "./pages/CollegeDetailsPage";
 import NotFound from "./pages/NotFound";
+import EditCollegePage from "./pages/EditCollegePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,7 @@ const App = () => (
             <Route path="/colleges" element={<AuthGuard><CollegesPage /></AuthGuard>} />
             <Route path="/colleges/new" element={<AuthGuard><AddCollegePage /></AuthGuard>} />
             <Route path="/colleges/:id" element={<AuthGuard><CollegeDetailsPage /></AuthGuard>} />
-            <Route path="/colleges/:id" element={<AuthGuard><CollegeDetailsPage /></AuthGuard>} />
+            <Route path="/colleges/:id/edit" element={<AuthGuard><EditCollegePage /></AuthGuard>} />
             <Route path="/programs" element={<AuthGuard><ProgramsPage /></AuthGuard>} />
             <Route path="/programs/new" element={<AuthGuard><AddProgramPage /></AuthGuard>} />
             

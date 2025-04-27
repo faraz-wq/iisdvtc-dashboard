@@ -152,12 +152,7 @@ export default function CollegeDetailsPage() {
                   </div>
                 )}
               </div>
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">
-                  {college.name}
-                </h1>
-                <p className="text-muted-foreground">{college.location}</p>
-              </div>
+              {college.name}
             </div>
 
             <div>
@@ -254,6 +249,21 @@ export default function CollegeDetailsPage() {
                 ))}
               </div>
             </div>
+            {college.name ? (
+              <iframe
+                loading="lazy"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  college.location
+                )}&output=embed`}
+                width="100%"
+                height="450"
+                style={{ border: "0" }}
+                allowFullScreen
+                title="College Location on Google Maps"
+              ></iframe>
+            ) : (
+              <p>No location data available.</p>
+            )}
           </div>
         </div>
       </div>
