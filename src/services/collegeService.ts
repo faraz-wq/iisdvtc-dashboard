@@ -7,25 +7,27 @@ export interface College {
   _id: string;
   name: string;
   shortName: string;
-  logo: string;
-  banner: string;
+  logo?: string;
+  banner?: string;
   description: string;
   location: string;
   affiliation?: string;
-  contact: {
-    address: string;
-    phone: string[];
-    email: string;
-  };
+  contact?: Contact;
   color: string;
-  programs: string[] | Program[];
+  programs: (string | Program)[];
   facilities: string[];
   faculty: Faculty[];
   events: Event[];
 }
 
+interface Contact {
+  address?: string;
+  phone?: string[];
+  email?: string;
+}
+
 export interface Faculty {
-  _id: string;
+  _id?: string;
   name: string;
   position: string;
   qualification: string;
@@ -33,21 +35,21 @@ export interface Faculty {
 }
 
 export interface Event {
-  _id: string;
+  _id?: string;
   title: string;
   date: string;
   description: string;
 }
 
 export interface Program {
-  _id: string;
+  _id?: string;
   title: string;
   category: string;
   duration: string;
-  eligibility: string;
-  description: string;
-  career: string;
-  features: string[];
+  eligibility?: string;
+  description?: string;
+  career?: string;
+  features?: string[];
 }
 
 export const getColleges = async (): Promise<College[]> => {
@@ -81,7 +83,7 @@ export const getCollege = async (id: string): Promise<College> => {
 export const createCollege = async (college: Omit<College, '_id'>): Promise<College> => {
   try {
     const response = await axios.post(API_URL, college, {
-      withCredentials: true
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {

@@ -40,6 +40,7 @@ const App = () => (
             <Route path="/colleges" element={<AuthGuard><CollegesPage /></AuthGuard>} />
             <Route path="/colleges/new" element={<AuthGuard><AddCollegePage /></AuthGuard>} />
             <Route path="/colleges/:id" element={<AuthGuard><CollegeDetailsPage /></AuthGuard>} />
+            <Route path="/colleges/:id" element={<AuthGuard><CollegeDetailsPage /></AuthGuard>} />
             <Route path="/programs" element={<AuthGuard><ProgramsPage /></AuthGuard>} />
             <Route path="/programs/new" element={<AuthGuard><AddProgramPage /></AuthGuard>} />
             
