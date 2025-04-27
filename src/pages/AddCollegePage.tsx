@@ -33,10 +33,23 @@ const collegeFormSchema = z.object({
     phone: z.array(z.string()).min(1, 'At least one phone number is required'),
     email: z.string().email('Invalid email address'),
   }),
-  color: z.string(),
-  facilities: z.array(z.string()),
+  color: z.string().default('#3B82F6'),
+  facilities: z.array(z.string()).default([]),
   logo: z.string().default('https://via.placeholder.com/150'),
   banner: z.string().default('https://via.placeholder.com/1200x400'),
+  // Adding the required fields from the College type
+  programs: z.array(z.string()).default([]),
+  faculty: z.array(z.object({
+    name: z.string(),
+    position: z.string(),
+    qualification: z.string(),
+    image: z.string(),
+  })).default([]),
+  events: z.array(z.object({
+    title: z.string(),
+    date: z.string(),
+    description: z.string(),
+  })).default([]),
 });
 
 type CollegeFormValues = z.infer<typeof collegeFormSchema>;
@@ -52,14 +65,22 @@ export default function AddCollegePage() {
       facilities: [],
       contact: {
         phone: [''],
+        address: '',
+        email: '',
       },
+      color: '#3B82F6',
+      logo: 'https://via.placeholder.com/150',
+      banner: 'https://via.placeholder.com/1200x400',
+      programs: [],
+      faculty: [],
+      events: [],
     },
   });
 
   async function onSubmit(data: CollegeFormValues) {
     setIsLoading(true);
     try {
-      await createCollege(data);
+      await createCollege(data as Omit<College, "_id">);
       toast({
         title: 'College created successfully',
         description: 'You will be redirected to colleges list',

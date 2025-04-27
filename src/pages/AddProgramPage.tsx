@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { useToast } from '@/hooks/use-toast';
 import { createProgram } from '@/services/programService';
+import { Program } from '@/services/collegeService';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -41,13 +42,19 @@ export default function AddProgramPage() {
     resolver: zodResolver(programFormSchema),
     defaultValues: {
       features: [''],
+      title: '',
+      category: '',
+      duration: '',
+      eligibility: '',
+      description: '',
+      career: '',
     },
   });
 
   async function onSubmit(data: ProgramFormValues) {
     setIsLoading(true);
     try {
-      await createProgram(data);
+      await createProgram(data as Omit<Program, "_id">);
       toast({
         title: 'Program created successfully',
         description: 'You will be redirected to programs list',

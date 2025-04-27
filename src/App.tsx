@@ -11,6 +11,9 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CollegesPage from "./pages/CollegesPage";
 import ProgramsPage from "./pages/ProgramsPage";
+import AddCollegePage from "./pages/AddCollegePage";
+import AddProgramPage from "./pages/AddProgramPage";
+import CollegeDetailsPage from "./pages/CollegeDetailsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
