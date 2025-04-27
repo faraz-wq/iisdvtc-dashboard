@@ -56,6 +56,7 @@ export interface Program {
   description?: string;
   career?: string;
   features?: string[];
+  colleges: College[];
 }
 
 export const getColleges = async (): Promise<College[]> => {

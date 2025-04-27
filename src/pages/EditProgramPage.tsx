@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
 import { useToast } from "@/hooks/use-toast";
-import { createProgram } from "@/services/programService";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,11 +15,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
-import CollegeDropdown from "@/components/common/CollegeDropDown";
+import { getProgram, updateProgram } from "@/services/programService";
 import { getColleges } from "@/services/collegeService";
+import CollegeDropdown from "@/components/common/CollegeDropDown";
 
-// Define the Zod schema for form validation
+// Define the schema for validation
 const programFormSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   category: z.string().min(2, "Category is required"),
@@ -29,25 +36,24 @@ const programFormSchema = z.object({
   eligibility: z.string().min(10, "Eligibility criteria must be detailed"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   career: z.string().min(10, "Career prospects must be detailed"),
-  features: z
-    .array(z.string().min(1, "Feature cannot be empty"))
-    .min(1, "At least one feature is required"),
+  features: z.array(z.string()).min(1, "At least one feature is required"),
 });
 
 type ProgramFormValues = z.infer<typeof programFormSchema>;
 
-export default function AddProgramPage() {
+export default function EditProgramPage() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [colleges, setColleges] = useState<{ _id: string; name: string }[]>([]);
+  const [selectedColleges, setSelectedColleges] = useState<string[]>([]);
+  const [programData, setProgramData] = useState<any>(null);
 
-    const [colleges, setColleges] = useState<{ _id: string; name: string }[]>([]);
-    const [selectedColleges, setSelectedColleges] = useState<string[]>([]);
-  // Initialize the form with default values
   const form = useForm<ProgramFormValues>({
     resolver: zodResolver(programFormSchema),
     defaultValues: {
-      features: [""], // Start with one empty feature field
+      features: [""],
       title: "",
       category: "",
       duration: "",
@@ -57,57 +63,80 @@ export default function AddProgramPage() {
     },
   });
 
-  // Handle form submission
-  async function onSubmit(data: ProgramFormValues) {
-    setIsLoading(true);
-    try {
-      const payload = {
-        ...data,
-        colleges: selectedColleges, // Include selected colleges in the payload
-      };
-      await createProgram(payload); // Pass the updated payload
-      toast({
-        title: "Program created successfully",
-        description: "You will be redirected to the programs list.",
-      });
-      navigate("/programs");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  // Helper function to add a new feature field
-  const addFeatureField = () => {
-    form.setValue("features", [...form.getValues("features"), ""]);
-  };
-
+  // Fetch the program data and available colleges
   useEffect(() => {
-    async function fetchColleges() {
+    async function fetchData() {
       try {
+        if (!id) return;
+
+        // Fetch the program details
+        const program = await getProgram(id);
+        setProgramData(program);
+
+        // Populate the form with the program data
+        form.reset({
+          title: program.title,
+          category: program.category,
+          duration: program.duration,
+          eligibility: program.eligibility,
+          description: program.description,
+          career: program.career,
+          features: program.features || [""],
+        });
+
+        setSelectedColleges(
+          program.colleges?.map((college) => college._id) || []
+        );
+
+        // Fetch all colleges
         const collegesData = await getColleges();
         setColleges(collegesData);
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to fetch colleges. Please try again.",
+          description: error.message,
         });
       }
     }
-  
-    fetchColleges();
-  }, [toast]);
-  
+
+    fetchData();
+  }, [id, form, navigate, toast]);
+
+  // Handle form submission
+  async function onSubmit(data: ProgramFormValues) {
+    setIsLoading(true);
+    try {
+      const updatePayload = {
+        ...data,
+        addColleges: selectedColleges.filter(
+          (collegeId) => !programData.colleges?.includes(collegeId)
+        ),
+        removeColleges: programData.colleges?.filter(
+          (collegeId: string) => !selectedColleges.includes(collegeId)
+        ),
+      };
+
+      await updateProgram(id!, updatePayload);
+      toast({
+        title: "Program updated successfully",
+        description: "You will be redirected to programs list",
+      });
+      navigate("/programs");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Back button */}
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
@@ -119,18 +148,16 @@ export default function AddProgramPage() {
           </Button>
         </div>
 
-        {/* Page header */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add New Program</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Edit Program</h1>
           <p className="text-muted-foreground">
-            Fill in the details below to create a new program.
+            Update the details of the program below.
           </p>
         </div>
 
-        {/* Form */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Title */}
+            {/* Program Title */}
             <FormField
               control={form.control}
               name="title"
@@ -175,24 +202,6 @@ export default function AddProgramPage() {
               )}
             />
 
-            {/* Eligibility */}
-            <FormField
-              control={form.control}
-              name="eligibility"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Eligibility Criteria</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe eligibility criteria"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {/* Description */}
             <FormField
               control={form.control}
@@ -211,74 +220,7 @@ export default function AddProgramPage() {
               )}
             />
 
-            {/* Career Prospects */}
-            <FormField
-              control={form.control}
-              name="career"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Career Prospects</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe career opportunities"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Features */}
-            <FormField
-              control={form.control}
-              name="features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Features</FormLabel>
-                  {field.value.map((feature, index) => (
-                    <FormControl key={index}>
-                      <div className="flex items-center space-x-2">
-                        <Input
-                          placeholder="Enter feature"
-                          value={feature}
-                          onChange={(e) => {
-                            const newFeatures = [...field.value];
-                            newFeatures[index] = e.target.value;
-                            field.onChange(newFeatures);
-                          }}
-                        />
-                        {index > 0 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => {
-                              const newFeatures = field.value.filter(
-                                (_, i) => i !== index
-                              );
-                              field.onChange(newFeatures);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-                    </FormControl>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addFeatureField}
-                  >
-                    Add Feature
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+            {/* Colleges Dropdown */}
             <FormItem>
               <FormLabel>Colleges</FormLabel>
               <FormControl>
@@ -291,7 +233,7 @@ export default function AddProgramPage() {
               <FormMessage />
             </FormItem>
 
-            {/* Submit and Cancel Buttons */}
+            {/* Buttons */}
             <div className="flex justify-end space-x-4">
               <Button
                 type="button"
@@ -301,7 +243,7 @@ export default function AddProgramPage() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Program"}
+                {isLoading ? "Updating..." : "Update Program"}
               </Button>
             </div>
           </form>

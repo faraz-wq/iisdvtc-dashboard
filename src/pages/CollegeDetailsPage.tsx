@@ -253,7 +253,8 @@ export default function CollegeDetailsPage() {
               <iframe
                 loading="lazy"
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                  college.location
+                  college.name +
+                  college.contact.address
                 )}&output=embed`}
                 width="100%"
                 height="450"
