@@ -35,7 +35,10 @@ const App = () => (
             <Route path="/" element={<AuthGuard><DashboardPage /></AuthGuard>} />
             <Route path="/dashboard" element={<AuthGuard><DashboardPage /></AuthGuard>} />
             <Route path="/colleges" element={<AuthGuard><CollegesPage /></AuthGuard>} />
+            <Route path="/colleges/new" element={<AuthGuard><AddCollegePage /></AuthGuard>} />
+            <Route path="/colleges/:id" element={<AuthGuard><CollegeDetailsPage /></AuthGuard>} />
             <Route path="/programs" element={<AuthGuard><ProgramsPage /></AuthGuard>} />
+            <Route path="/programs/new" element={<AuthGuard><AddProgramPage /></AuthGuard>} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
