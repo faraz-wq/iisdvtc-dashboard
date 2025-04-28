@@ -17,6 +17,8 @@ import CollegeDetailsPage from "./pages/CollegeDetailsPage";
 import NotFound from "./pages/NotFound";
 import EditCollegePage from "./pages/EditCollegePage";
 import EditProgramPage from "./pages/EditProgramPage";
+import FormSubmissionsList from "./pages/TabsView";
+import TabsView from "./pages/TabsView";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,7 +48,7 @@ const App = () => (
             <Route path="/programs" element={<AuthGuard><ProgramsPage /></AuthGuard>} />
             <Route path="/programs/:id/edit" element={<AuthGuard><EditProgramPage /></AuthGuard>} />
             <Route path="/programs/new" element={<AuthGuard><AddProgramPage /></AuthGuard>} />
-            
+            <Route path="/inquiries" element={<AuthGuard><TabsView /></AuthGuard>} /> 
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

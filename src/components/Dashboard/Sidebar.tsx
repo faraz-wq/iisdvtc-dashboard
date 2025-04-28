@@ -6,8 +6,9 @@ import {
   BookOpen, 
   School, 
   LogOut, 
-  Menu, 
-  X 
+  Menu,  
+  X, 
+  FileSearch
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -34,11 +35,18 @@ export const Sidebar = () => {
       icon: <BookOpen className="h-5 w-5" />,
       path: '/programs',
     },
+    {
+      name: 'Inquiries',
+      icon: <FileSearch className="h-5 w-5" />,
+      path: '/inquiries'
+    }
   ];
 
   const handleLogout = async () => {
     await logout();
   };
+
+  console.log(navItems);
 
   return (
     <>

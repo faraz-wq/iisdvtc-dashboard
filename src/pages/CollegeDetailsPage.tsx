@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardLayout } from "@/components/Dashboard/DashboardLayout";
-import { getCollege, College, deleteCollege } from "@/services/collegeService";
+import { getCollege, College, deleteCollege, Program } from "@/services/collegeService";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/common/Spinner";
@@ -181,6 +181,23 @@ export default function CollegeDetailsPage() {
                 </div>
               </div>
             </div>
+            {college.name ? (
+              <iframe
+                loading="lazy"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  college.name +
+                  college.contact.address
+                )}&output=embed`}
+                width="100%"
+                height="350"
+                className="rounded-xl"
+                style={{ border: "0" }}
+                allowFullScreen
+                title="College Location on Google Maps"
+              ></iframe>
+            ) : (
+              <p>No location data available.</p>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -189,7 +206,7 @@ export default function CollegeDetailsPage() {
               <div className="mt-2 space-y-2">
                 {Array.isArray(college.programs) &&
                 college.programs.length > 0 ? (
-                  college.programs.map((program: any) => (
+                  college.programs.map((program: Program) => (
                     <div
                       key={program._id}
                       className="rounded-lg border p-4 hover:bg-accent"
@@ -249,22 +266,7 @@ export default function CollegeDetailsPage() {
                 ))}
               </div>
             </div>
-            {college.name ? (
-              <iframe
-                loading="lazy"
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                  college.name +
-                  college.contact.address
-                )}&output=embed`}
-                width="100%"
-                height="450"
-                style={{ border: "0" }}
-                allowFullScreen
-                title="College Location on Google Maps"
-              ></iframe>
-            ) : (
-              <p>No location data available.</p>
-            )}
+            
           </div>
         </div>
       </div>
