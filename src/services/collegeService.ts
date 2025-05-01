@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/colleges';
+const API_URL = `${import.meta.env.VITE_API_URL}/colleges`;
 
 export interface College {
   _id: string;
@@ -88,9 +88,9 @@ export const getCollege = async (id: string): Promise<College> => {
   }
 };
 
-function cleanCollegeData(data: any): any {
+function cleanCollegeData(data) {
   // Initialize cleaned data object
-  const cleanedData: any = { ...data };
+  const cleanedData = { ...data };
 
   // Parse 'contact' field from JSON string to object
   if (typeof cleanedData.contact === "string") {

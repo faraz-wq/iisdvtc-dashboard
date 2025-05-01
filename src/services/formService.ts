@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/forms'; // Replace with your API endpoint
+const API_URL = `${import.meta.env.VITE_API_URL}/forms`; // Replace with your API endpoint
 
 // Define the Form Submission interface
 export interface FormSubmission {
@@ -12,6 +12,7 @@ export interface FormSubmission {
   program?: string;
   bestTime?: "morning" | "afternoon" | "evening";
   message?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>; // Dynamic metadata for additional fields
   createdAt: string; // Timestamp
   updatedAt: string; // Timestamp
@@ -100,8 +101,8 @@ export const deleteFormSubmission = async (id: string): Promise<{ message: strin
 };
 
 // Helper function to clean form submission data
-function cleanFormSubmissionData(data: any): FormSubmission {
-  const cleanedData: any = { ...data };
+function cleanFormSubmissionData(data): FormSubmission {
+  const cleanedData = { ...data };
 
   // Ensure optional fields have default values if missing
   cleanedData.subject = cleanedData.subject || '';

@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(true);
       try {
         // Make a request to a protected endpoint to check if the JWT cookie is valid
-        await axios.get('http://localhost:3000/colleges', { withCredentials: true });
+        await axios.get(`${import.meta.env.VITE_API_URL}/colleges`, { withCredentials: true });
         setIsAuthenticated(true);
         setUser('Admin'); // Placeholder for now
       } catch (error) {

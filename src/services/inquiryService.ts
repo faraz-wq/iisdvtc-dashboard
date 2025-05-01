@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/inquiries'; // Replace with your API endpoint
+const API_URL = `${import.meta.env.VITE_API_URL}/inquiries`; // Replace with your API endpoint
 
 // Define the Inquiry interface
 export interface Inquiry {

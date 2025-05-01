@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { Program } from './collegeService';
 
-const API_URL = 'http://localhost:3000/programs';
+const API_URL = `${import.meta.env.VITE_API_URL}/programs`;
 
 export const getPrograms = async (): Promise<Program[]> => {
   try {
