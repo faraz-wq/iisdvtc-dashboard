@@ -17,7 +17,6 @@ import CollegeDetailsPage from "./pages/CollegeDetailsPage";
 import NotFound from "./pages/NotFound";
 import EditCollegePage from "./pages/EditCollegePage";
 import EditProgramPage from "./pages/EditProgramPage";
-import FormSubmissionsList from "./pages/TabsView";
 import TabsView from "./pages/TabsView";
 
 const queryClient = new QueryClient({
