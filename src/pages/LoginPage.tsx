@@ -24,7 +24,7 @@ const LoginPage = () => {
         <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-2">
             <School className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">College Admin</span>
+            <span className="text-2xl font-bold">IISDVTC Admin Portal</span>
           </div>
         </div>
         

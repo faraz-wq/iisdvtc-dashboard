@@ -68,7 +68,7 @@ export const Sidebar = () => {
         )}
       >
         <div className="p-4 border-b border-border">
-          <h2 className="text-xl font-bold text-primary">College Admin</h2>
+          <h2 className="text-xl font-bold text-primary">IISDVTC Admin Portal</h2>
         </div>
 
         <div className="flex-1 overflow-auto py-4">
@@ -97,7 +97,7 @@ export const Sidebar = () => {
               {user?.charAt(0) || 'A'}
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium">{user || 'Admin'}</p>
+              <p className="text-sm font-medium">{user}</p>
             </div>
           </div>
           <Button

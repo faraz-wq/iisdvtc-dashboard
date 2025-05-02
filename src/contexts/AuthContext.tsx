@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useToast } from '@/hooks/use-toast';
-import { LoginCredentials } from '@/services/authService';
+import { LoginCredentials, logout } from '@/services/authService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         credentials,
         { withCredentials: true }
       );
-
+      
       setUser(response.data.username);
       setIsAuthenticated(true);
 
@@ -89,11 +89,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/logout`,
-        {},
-        { withCredentials: true }
-      );
+      await logout();
       setIsAuthenticated(false);
       setUser(null);
 

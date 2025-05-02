@@ -79,16 +79,7 @@ const TabsView = () => {
     (activeTab === "submissions" && submissions.length === 0) ||
     (activeTab === "inquiries" && inquiries.length === 0);
 
-  if (isEmpty) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="text-center">
-          <p className="text-xl font-medium text-gray-700">No {activeTab} found. 🤷‍♂️</p>
-          <p className="text-gray-500 mt-2">Start collecting feedback to improve your product!</p>
-        </div>
-      </div>
-    );
-  }
+
 
   // Get the current data based on the active tab
   const data = activeTab === "submissions" ? submissions : inquiries;
@@ -96,7 +87,7 @@ const TabsView = () => {
   return (
     <DashboardLayout>
       <div className="w-full bg-gray-100">
-        <div className="max-w-fit mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="w-full mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           {/* Tabs */}
           <header className="px-6 py-4 border-b border-gray-200">
             <h1 className="text-2xl font-bold text-gray-800">Data Management</h1>
@@ -124,7 +115,7 @@ const TabsView = () => {
             </div>
           </header>
           {/* Table to display data */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
