@@ -25,8 +25,7 @@ export const getFormSubmissions = async (): Promise<FormSubmission[]> => {
   try {
     const response = await axios.get(API_URL, {
       withCredentials: true,
-    });
-    console.log(response.data);
+    }); 
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -41,8 +40,7 @@ export const getFormSubmission = async (id: string): Promise<FormSubmission> => 
   try {
     const response = await axios.get(`${API_URL}/${id}`, {
       withCredentials: true,
-    });
-    console.log(response.data);
+    }); 
     return (response.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

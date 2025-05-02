@@ -46,8 +46,6 @@ export const Sidebar = () => {
     await logout();
   };
 
-  console.log(navItems);
-
   return (
     <>
       {/* Mobile menu button */}

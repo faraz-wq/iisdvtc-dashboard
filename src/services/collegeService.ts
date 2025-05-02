@@ -77,8 +77,7 @@ export const getCollege = async (id: string): Promise<College> => {
   try {
     const response = await axios.get(`${API_URL}/${id}`, {
       withCredentials: true
-    });
-    console.log(response.data);
+    }); 
     return cleanCollegeData(response.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -143,9 +142,7 @@ function cleanCollegeData(data) {
   }
 
   // Remove unnecessary fields like '__v'
-  delete cleanedData.__v;
-
-  console.log(cleanedData);
+  delete cleanedData.__v; 
   return cleanedData;
 }
 

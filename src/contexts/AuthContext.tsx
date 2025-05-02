@@ -1,9 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useToast } from '@/hooks/use-toast';
-import { login, logout, LoginCredentials } from '@/services/authService';
+import { LoginCredentials } from '@/services/authService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -32,16 +31,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Check if user is already authenticated on mount
+  // Check if user is authenticated by calling a protected route
   useEffect(() => {
     const checkAuth = async () => {
-      setIsLoading(true);
       try {
-        // Make a request to a protected endpoint to check if the JWT cookie is valid
-        await axios.get(`${import.meta.env.VITE_API_URL}/colleges`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/colleges/`, {
+          withCredentials: true,
+        });
+        setUser(response.data.user);  
         setIsAuthenticated(true);
-        setUser('Admin'); // Placeholder for now
-      } catch (error) {
+      } catch (err) {
         setIsAuthenticated(false);
         setUser(null);
       } finally {
@@ -57,24 +56,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     
     try {
-      await login(credentials);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        credentials,
+        { withCredentials: true }
+      );
+
+      setUser(response.data.username);
       setIsAuthenticated(true);
-      setUser('Admin'); // Placeholder for now
+
       toast({
         title: "Login Successful",
-        description: "Welcome to the College Admin Dashboard",
+        description: `Welcome back, ${response.data.username}`,
       });
+
       navigate('/dashboard');
-    } catch (error) {
+    } catch (err) {
+      const message = err.response?.data?.message || 'An error occurred during login.';
+      setError(message);
+      toast({
+        title: "Login Failed",
+        description: message,
+        variant: "destructive",
+      });
       setIsAuthenticated(false);
-      if (error instanceof Error) {
-        setError(error.message);
-        toast({
-          title: "Login Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
     } finally {
       setIsLoading(false);
     }
@@ -84,23 +89,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      await logout();
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
       setIsAuthenticated(false);
       setUser(null);
+
       toast({
         title: "Logout Successful",
-        description: "You have been logged out",
+        description: "You have been logged out.",
       });
+
       navigate('/login');
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-        toast({
-          title: "Logout Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+    } catch (err) {
+      const message = err.response?.data?.message || 'Failed to log out.';
+      setError(message);
+      toast({
+        title: "Logout Failed",
+        description: message,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
