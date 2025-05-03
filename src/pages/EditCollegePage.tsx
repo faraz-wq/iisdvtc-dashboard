@@ -185,9 +185,7 @@ export default function EditCollegePage() {
 
       toast({
         title: "College updated successfully",
-        description: "You will be redirected to colleges list",
       });
-      navigate("/colleges");
     } catch (error) {
       toast({
         variant: "destructive",

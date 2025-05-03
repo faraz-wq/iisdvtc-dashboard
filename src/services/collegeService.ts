@@ -10,7 +10,7 @@ export interface College {
   logo?: string;
   banner?: string;
   description: string;
-  location: Location;
+  location: string;
   affiliation?: string;
   contact?: Contact;
   color: string;
@@ -18,12 +18,6 @@ export interface College {
   facilities: string[];
   faculty: Faculty[];
   events: Event[];
-}
-
-interface Location{
-  latitude: number;
-  longitude: number;
-  address?: string;
 }
 
 interface Contact {
