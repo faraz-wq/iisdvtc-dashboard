@@ -35,10 +35,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/colleges/`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/inquiries/`, {
           withCredentials: true,
         });
-        setUser(response.data.user);  
+        setUser(response.data.username);  
         setIsAuthenticated(true);
       } catch (err) {
         setIsAuthenticated(false);
