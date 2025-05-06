@@ -43,7 +43,7 @@ const ImageCard = ({ image, onEdit, onDelete }: ImageCardProps) => {
       <div className="relative aspect-square overflow-hidden bg-muted">
         {image.src ? (
           <img
-            src={image.src}
+            src={`${image.src}?auto=format,compress&q=50`}
             alt={image.alt || image.title}
             className="object-cover w-full h-full transition-all hover:scale-105"
           />

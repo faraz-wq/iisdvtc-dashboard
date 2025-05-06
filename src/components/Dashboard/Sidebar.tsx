@@ -36,6 +36,11 @@ export const Sidebar = () => {
       path: '/programs',
     },
     {
+      name: 'Gallery',
+      icon: <FileSearch className='h-5 w-5' />,
+      path: '/gallery'
+    },
+    {
       name: 'Inquiries',
       icon: <FileSearch className="h-5 w-5" />,
       path: '/inquiries'
