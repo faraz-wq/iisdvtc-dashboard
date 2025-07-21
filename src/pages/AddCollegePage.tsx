@@ -602,12 +602,3 @@ export default function AddCollegePage() {
     </DashboardLayout>
   );
 }
-
-// Helper function to upload files (mock implementation)
-async function uploadFiles(formData: FormData) {
-  // Replace this with actual API calls to upload files to a cloud service
-  return {
-    logo: "https://via.placeholder.com/150",
-    banner: "https://via.placeholder.com/1200x400",
-  };
-}
